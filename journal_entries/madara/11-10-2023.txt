@@ -1,0 +1,5 @@
+
+Title: first entry
+Mood: Happy
+Time: 19:14:10
+checking if this is working correctly
