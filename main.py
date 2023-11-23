@@ -1,157 +1,67 @@
 import os
+import json
 import datetime
 import hashlib
 import getpass
 
-# Path where the user credentials will be stored
-CREDENTIALS_PATH = "credentials.txt"
-
-# Path where the journal entries will be stored
+CREDENTIALS_PATH = "credentials.json"
 JOURNAL_PATH = "journal_entries"
-
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin'
 
 
-# Function to hash a password
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-# Function to check if the admin account exists
-def admin_exists():
+def read_credentials():
     if not os.path.exists(CREDENTIALS_PATH):
-        return False
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            if line.startswith(ADMIN_USERNAME + ","):
-                return True
-    return False
+        return {}
+    with open(CREDENTIALS_PATH, 'r') as file:
+        return json.load(file)
 
 
-# verifying admin password -- hashed password
-"""
-def verify_admin_password():
-    admin_hashed_password = hash_password(ADMIN_PASSWORD)
-    print("Hashed Admin Password (for verification):", admin_hashed_password)
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            if line.startswith(ADMIN_USERNAME + ","):
-                _, _, _, stored_password = line.strip().split(',')
-                if stored_password == admin_hashed_password:
-                    print("Admin password verified successfully.")
-                else:
-                    print("Admin password verification failed.")
-                return
-
-# Call this function to verify the admin password
-verify_admin_password()
-"""
+def write_credentials(credentials):
+    with open(CREDENTIALS_PATH, 'w') as file:
+        json.dump(credentials, file, indent=4)
 
 
-# Function to create an admin account
+def admin_exists():
+    credentials = read_credentials()
+    return ADMIN_USERNAME in credentials
+
+
+def admin_create_user():
+    return register_user()
+
+
 def create_admin_account():
-    hashed_password = hash_password(ADMIN_PASSWORD)
-    with open(CREDENTIALS_PATH, "a") as file:
-        file.write(f"{ADMIN_USERNAME},admin@example.com,admin,{hashed_password}\n")
-    print("Admin account created.")
+    if not admin_exists():
+        credentials = read_credentials()
+        credentials[ADMIN_USERNAME] = {
+            "email": "admin@example.com",
+            "age": "admin",
+            "password": hash_password(ADMIN_PASSWORD)
+        }
+        write_credentials(credentials)
+        print("Admin account created.")
 
 
-# Main startup sequence
-if not admin_exists():
-    create_admin_account()
-
-if not os.path.exists(JOURNAL_PATH):
-    os.makedirs(JOURNAL_PATH)
-
-
-def view_user_info(username):
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            parts = line.strip().split(',')
-            if len(parts) < 4:
-                continue  # Skip lines that don't have enough values
-            stored_username, email, age, _ = parts
-            if stored_username == username:
-                print(f"Username: {stored_username}\nEmail: {email}\nAge: {age}")
-                return
-    print("User not found.")
-
-
-def view_edit_user_info(admin_username):
+def admin_view_user_journal(admin_username):
     if admin_username != ADMIN_USERNAME:
-        print("Only the admin can view or edit user info.")
+        print("Only the admin can view user journals.")
         return
 
-    # List all users
-    print("List of Users:")
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            username = line.split(',')[0]
-            print(username)
-
-    # Ask which user to edit
-    username_to_edit = input("Enter the username to view/edit: ")
-    view_user_info(username_to_edit)
-
-    # Ask if the admin wants to edit this user's info
-    edit_choice = input("Do you want to edit this user's info? (Y/N): ").strip().lower()
-    if edit_choice == 'y':
-        edit_user_info(username_to_edit)
+    display_users()
+    username = input("Enter username to view their journal: ")
+    list_entries(username)
 
 
-def edit_user_info(username):
-    with open(CREDENTIALS_PATH, "r") as file:
-        lines = file.readlines()
-
-    found = False
-    with open(CREDENTIALS_PATH, "w") as file:
-        for line in lines:
-            stored_username, email, age, password = line.strip().split(',')
-            if stored_username == username:
-                new_email = input("Enter new email (leave blank to keep current): ").strip() or email
-                new_age = input("Enter new age (leave blank to keep current): ").strip() or age
-                line = f"{username},{new_email},{new_age},{password}\n"
-                found = True
-            file.write(line)
-
-    if not found:
-        print("User not found.")
-    else:
-        print("User information updated.")
+def user_exists(username):
+    credentials = read_credentials()
+    return username in credentials
 
 
-def delete_user(admin_username):
-    if admin_username != ADMIN_USERNAME:
-        print("Only the admin can delete users.")
-        return
-
-    # List all users before deletion
-    print("List of Users:")
-    with open(CREDENTIALS_PATH, "r") as file:
-        users = [line.split(',')[0] for line in file if line.strip()]
-    for user in users:
-        print(user)
-
-    delete_username = input("Enter the username of the user to delete: ")
-
-    # Proceed with deletion if the user exists
-    if delete_username in users:
-        with open(CREDENTIALS_PATH, "r") as file:
-            lines = file.readlines()
-
-        with open(CREDENTIALS_PATH, "w") as file:
-            for line in lines:
-                if line.startswith(delete_username + ","):
-                    continue  # Skip the user to be deleted
-                file.write(line)
-
-        print(f"User {delete_username} has been deleted.")
-    else:
-        print(f"User {delete_username} not found.")
-
-
-# Function to register a new user
 def register_user():
     username = input("Create a username: ")
     email = input("Enter your email: ")
@@ -159,101 +69,124 @@ def register_user():
     password = getpass.getpass("Create a password: ")
     hashed_password = hash_password(password)
 
-    if user_exists(username):
+    credentials = read_credentials()
+    if username in credentials:
         print("Username already exists. Please try a different username.")
         return False
 
-    with open(CREDENTIALS_PATH, "a") as file:
-        file.write(f"{username},{email},{age},{hashed_password}\n")
+    credentials[username] = {"email": email, "age": age, "password": hashed_password}
+    write_credentials(credentials)
     print("Registration successful.")
     return True
 
 
-# Function to check if a user already exists
-def user_exists(username):
-    if not os.path.exists(CREDENTIALS_PATH):
-        return False
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            if line.split(',')[0] == username:
-                return True
-    return False
-
-
-# Function to check login credentials
 def login():
     username = input("Enter your username: ")
     password = getpass.getpass("Enter your password: ")
     hashed_password = hash_password(password)
 
-    with open(CREDENTIALS_PATH, "r") as file:
-        for line in file:
-            parts = line.strip().split(',')
-            if len(parts) < 4:
-                # Skip lines that don't have enough values (for backward compatibility)
-                continue
-            stored_username, _, _, stored_password = parts
-            if stored_username == username and stored_password == hashed_password:
-                return username  # Return the username if login is successful
+    credentials = read_credentials()
+    if username in credentials and credentials[username]["password"] == hashed_password:
+        return username
     return None
 
 
-def write_entry():
+def display_users():
+    print("List of Users:")
+    credentials = read_credentials()
+    for user in credentials:
+        print(user)
+
+
+def view_user_info():
+    display_users()
+    username = input("Enter username to view info: ")
+    user_info = read_credentials().get(username)
+    if user_info:
+        print(f"Username: {username}\nEmail: {user_info['email']}\nAge: {user_info['age']}")
+    else:
+        print("User not found.")
+
+
+def delete_user(admin_username):
+    if admin_username != ADMIN_USERNAME:
+        print("Only the admin can delete users.")
+        return
+
+    display_users()
+    delete_username = input("Enter the username of the user to delete: ")
+    credentials = read_credentials()
+    if delete_username in credentials:
+        del credentials[delete_username]
+        write_credentials(credentials)
+        print(f"User {delete_username} has been deleted.")
+    else:
+        print("User not found.")
+
+
+def delete_user_entry(username):
+    journal_dir = f"{JOURNAL_PATH}/{username}"
+    if not os.path.exists(journal_dir):
+        print("No journal entries found.")
+        return
+
+    list_entries(username)
+    entry_date = input("Enter the date of the entry you want to delete (MM-DD-YYYY): ")
+    entry_file = f"{journal_dir}/{entry_date}.txt"
+
+    if os.path.exists(entry_file):
+        os.remove(entry_file)
+        print(f"Entry for {entry_date} deleted.")
+    else:
+        print("Entry not found for the specified date.")
+
+
+def write_entry(username):
     today = datetime.date.today()
-    now = datetime.datetime.now()
-    filename = f"{JOURNAL_PATH}/{today.strftime('%m-%d-%Y')}.txt"
+    filename = f"{JOURNAL_PATH}/{username}/{today.strftime('%m-%d-%Y')}.txt"
     title = input("Enter title for your journal entry: ").strip()
+    mood = input("How are you feeling today? ").strip()
+    content = input("Write your journal entry: ").strip()
 
-    # New feature: Record mood
-    mood = input("How are you feeling today (e.g., Happy, Sad, Neutral)? ").strip()
-
-    print("Write your journal entry (type 'END' on a new line to finish):")
+    if not os.path.exists(f"{JOURNAL_PATH}/{username}"):
+        os.makedirs(f"{JOURNAL_PATH}/{username}")
 
     with open(filename, "a") as file:
-        file.write(f"\nTitle: {title}\n")
-        file.write(f"Mood: {mood}\n")  # Save the mood
-        file.write(f"Time: {now.strftime('%H:%M:%S')}\n")
-        while True:
-            line = input()
-            if line.strip().lower() == "end":
-                break
-            file.write(line + "\n")
-    print(f"Journal entry '{title}' saved.")
+        file.write(f"Title: {title}\nMood: {mood}\nContent: {content}\n\n")
+
+    print("Journal entry saved.")
 
 
-def read_entry(date):
-    # Convert user input date to MM-DD-YYYY format for filename
-    formatted_date = datetime.datetime.strptime(date, '%m/%d/%Y').strftime('%m-%d-%Y')
-    filename = f"{JOURNAL_PATH}/{formatted_date}.txt"
-    if os.path.exists(filename):
-        with open(filename, "r") as file:
-            entries = file.read().split('\nTitle: ')[1:]
-        print(f"\nJournal Entries for {date}:")
-        for i, entry in enumerate(entries):
-            title = entry.split('\n')[0]
-            print(f"{i + 1}. {title}")
-
-        entry_number = int(input("\nEnter the number of the entry you want to read: ")) - 1
-        if 0 <= entry_number < len(entries):
-            entry_title = entries[entry_number].split('\n')[0]  # Extract the title outside the f-string
-            print(f"\nReading Entry: {entry_title}")
-            print(entries[entry_number])
+def read_entry(username):
+    date_input = input("Enter date (MM/DD/YYYY) to read entries: ")
+    try:
+        date = datetime.datetime.strptime(date_input, '%m/%d/%Y').date()
+        filename = f"{JOURNAL_PATH}/{username}/{date.strftime('%m-%d-%Y')}.txt"
+        if os.path.exists(filename):
+            with open(filename, "r") as file:
+                print(file.read())
         else:
-            print("Invalid entry number.")
-    else:
-        print("No entry found for this date.")
+            print("No entries found for this date.")
+    except ValueError:
+        print("Invalid date format. Please use MM/DD/YYYY.")
 
 
 def view_mood_statistics():
     print("\nMood Statistics:")
     mood_count = {}
-    for filename in os.listdir(JOURNAL_PATH):
-        with open(f"{JOURNAL_PATH}/{filename}", "r") as file:
-            entries = file.read().split('\nTitle: ')[1:]
-            for entry in entries:
-                mood_line = entry.split('\n')[1]  # Assuming the second line contains the mood
-                mood = mood_line.split(': ')[1]
-                mood_count[mood] = mood_count.get(mood, 0) + 1
+    for user_dir in os.listdir(JOURNAL_PATH):
+        user_path = os.path.join(JOURNAL_PATH, user_dir)
+        if os.path.isdir(user_path):
+            for filename in os.listdir(user_path):
+                file_path = os.path.join(user_path, filename)
+                with open(file_path, "r") as file:
+                    entries = file.read().split('\n\n')  # Split entries by double newline
+                    for entry in entries:
+                        lines = entry.split('\n')
+                        mood_line = next((line for line in lines if line.startswith("Mood:")), None)
+                        if mood_line:
+                            mood = mood_line.split("Mood: ")[1]
+                            mood_count[mood] = mood_count.get(mood, 0) + 1
 
     for mood, count in mood_count.items():
         print(f"{mood}: {count} time(s)")
@@ -274,107 +207,120 @@ def search_entries(keyword):
 
     if not found:
         print("No entries found with that keyword.")
+    pass
 
 
-def list_entries():
-    print("\nList of All Journal Entries:")
-    for filename in sorted(os.listdir(JOURNAL_PATH)):
-        date = filename.replace('.txt', '')
-        print(f"\nDate: {date}")
-        with open(f"{JOURNAL_PATH}/{filename}", "r") as file:
-            entries = file.read().split('\nTitle: ')[1:]
-            for i, entry in enumerate(entries):
-                title = entry.split('\n')[0]
-                print(f"  {i + 1}. {title}")
+def list_entries(username):
+    print("\nList of All Journal Entries for", username)
+    journal_dir = f"{JOURNAL_PATH}/{username}"
+    entries_dict = {}  # Ensure this dictionary is declared
+
+    if os.path.exists(journal_dir):
+        for filename in sorted(os.listdir(journal_dir)):
+            date = filename.replace('.txt', '')
+            print(f"\nDate: {date}")
+            file_path = os.path.join(journal_dir, filename)
+
+            with open(file_path, "r") as file:
+                entries = file.read().strip().split('\n\n')  # Split entries by double newline
+                for entry in entries:
+                    lines = entry.split('\n')
+                    title_line = next((line for line in lines if line.startswith("Title: ")), "Title: Unknown")
+                    title = title_line.split("Title: ")[1]
+                    print(f"  - {title}")
+                    entries_dict[title] = entry
+
+    entry_title = input("\nEnter the title of the entry you want to read: ").strip()
+
+    if entry_title in entries_dict:
+        print(f"\nReading Entry: {entry_title}")
+        print(entries_dict[entry_title])
+    else:
+        print("Entry not found.")
 
 
 def main():
+    if not os.path.exists(JOURNAL_PATH):
+        os.makedirs(JOURNAL_PATH)
+
+    create_admin_account()
+
     while True:
-        user_type = input("Are you an admin (A), a new user (N), or a returning user (R)? [A/N/R]: ").strip().lower()
+        user_type = input(
+            "Are you an admin (A), a new user (N), a returning user (R), or would you like to quit (Q)? [A/N/R/Q]: ").strip().lower()
 
-        if user_type == 'a':  # Admin login
-            while True:
-                username = login()
-                if username == ADMIN_USERNAME:
-                    print(f"Welcome, Admin {username}!")
-                    while True:
-                        print("\nAdmin Actions")
-                        print("1. View/Edit User Info")
-                        print("2. Delete a User")
-                        print("3. Exit")
-                        admin_choice = input("Enter choice: ")
+        if user_type == 'a':
+            username = login()
+            if username == ADMIN_USERNAME:
+                print(f"Welcome, Admin {username}!")
+                while True:
+                    print("\nAdmin Actions")
+                    print("1. View User Info")
+                    print("2. Delete a User")
+                    print("3. Create a User")
+                    print("4. View User Journals")
+                    print("5. Exit")
+                    admin_choice = input("Enter choice: ")
 
-                        if admin_choice == '1':
-                            view_edit_user_info(username)
-                        elif admin_choice == '2':
-                            delete_user(username)
-                        elif admin_choice == '3':
-                            break  # Break out of the admin loop
-                        else:
-                            print("Invalid choice. Please try again.")
-                    break  # Break out of the admin login loop
-                else:
-                    print("Admin login failed. Please try again or enter 'exit' to leave.")
-                    if input().lower() == 'exit':
-                        return  # Exit the program
+                    if admin_choice == '1':
+                        view_user_info()
+                    elif admin_choice == '2':
+                        delete_user(username)
+                    elif admin_choice == '3':
+                        admin_create_user()
+                    elif admin_choice == '4':
+                        admin_view_user_journal(username)
+                    elif admin_choice == '5':
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
+            else:
+                print("Admin login failed.")
 
-        elif user_type in ['n', 'r']:  # New or Returning User
+        elif user_type in ['n', 'r']:
             if user_type == 'n':
-                if register_user():
-                    print("Registration successful. Please log in.")
-                else:
-                    continue  # Continue at the start of the main loop
+                if not register_user():
+                    continue
 
-            while True:
-                username = login()
-                if username:
-                    global JOURNAL_PATH
-                    JOURNAL_PATH = f"journal_entries/{username}"
-                    if not os.path.exists(JOURNAL_PATH):
-                        os.makedirs(JOURNAL_PATH)
-                    print(f"Welcome, {username}!")
-                    break
-                else:
-                    print("Login failed. Please try again or enter 'exit' to leave.")
-                    if input().lower() == 'exit':
-                        return  # Exit the program
+            username = login()
+            if username:
+                print(f"Welcome, {username}!")
+                while True:
+                    print("\nJournal App")
+                    print("1. Write new entry")
+                    print("2. Read an entry")
+                    print("3. View mood statistics")
+                    print("4. Search entries")
+                    print("5. List all entries")
+                    print("6. Delete an entry")
+                    print("7. Exit")
+                    choice = input("Enter choice: ")
 
-            # Regular user actions here
-            while True:
-                print("\nJournal App")
-                print("1. Write new entry")
-                print("2. Read an entry")
-                print("3. View mood statistics")
-                print("4. Search entries")
-                print("5. List all entries")
-                print("6. Exit")
-                choice = input("Enter choice: ")
+                    if choice == '1':
+                        write_entry(username)
+                    elif choice == '2':
+                        read_entry(username)
+                    elif choice == '3':
+                        view_mood_statistics()
+                    elif choice == '4':
+                        search_entries(username)
+                    elif choice == '5':
+                        list_entries(username)
+                    elif choice == '6':
+                        delete_user_entry(username)
+                    elif choice == '7':
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
+            else:
+                print("Login failed. Please try again.")
 
-                if choice == '1':
-                    write_entry()
-                elif choice == '2':
-                    date = input("Enter date (MM/DD/YYYY) to read: ")
-                    try:
-                        read_entry(date)
-                    except ValueError:
-                        print("Invalid date format. Please use MM/DD/YYYY.")
-                elif choice == '3':
-                    view_mood_statistics()
-                elif choice == '4':
-                    keyword = input("Enter keyword to search: ")
-                    search_entries(keyword)
-                elif choice == '5':
-                    list_entries()
-                elif choice == '6':
-                    break  # Exit the journal app loop
-                else:
-                    print("Invalid choice. Please try again.")
+        elif user_type == 'q':
+            print("Exiting the program.")
+            break
 
-        elif user_type == 'exit':
-            break  # Exit the main loop, thus ending the program
         else:
-            print("Invalid selection. Please enter 'A' for admin, 'N' for new user, 'R' for returning user, or 'exit' "
-                  "to leave.")
+            print("Invalid selection. Please enter 'A', 'N', 'R', or 'Q'.")
 
 
 if __name__ == "__main__":

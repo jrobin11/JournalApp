@@ -3,3 +3,13 @@ Title: Thanksgiving
 Mood: Happy
 Time: 17:03:02
 testing to see if this works, if not then i have to keep working on it. What is this man?
+Title: another test entry
+Content: test test, just checking if this works.
+Title: tester
+Mood: sad
+Content: im feeling a little down right now
+
+Title: testing another
+Mood: great
+Content: another testing entry
+
