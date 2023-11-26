@@ -1,4 +1,4 @@
-# Memory Lane - Journal Application
+ # Memory Lane - Journal Application
 
 ## Description
 Memory Lane is a user-friendly, command-line diary application tailored for elderly users to easily record and revisit their daily thoughts and memories. It is designed to run smoothly on basic computer systems, enabling users to write new entries, read old ones, and search through entries by dates or keywords. The app stores each entry in a simple text file format, ensuring accessibility and simplicity. By providing a digital space for reflective writing, Memory Lane aims to offer therapeutic benefits and a sense of nostalgia, enhancing the mental well-being of its users. This project also serves as a practical application of file system and mass-storage system concepts, demonstrating the real-world utility of these computing fundamentals.

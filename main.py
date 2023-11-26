@@ -32,8 +32,8 @@ def admin_exists():
 
 
 def admin_create_user():
-    return register_user()
-
+    print("Enter 'cancel' at any prompt to go back, or just press Enter.")
+    register_user()
 
 def create_admin_account():
     if not admin_exists():
@@ -53,8 +53,15 @@ def admin_view_user_journal(admin_username):
         return
 
     display_users()
-    username = input("Enter username to view their journal: ")
-    list_entries(username)
+    while True:
+        username = input("Enter username to view their journal, or enter 'cancel' to go back: ")
+        if username.lower() == 'cancel' or username == '':
+            return
+        if username in read_credentials():
+            list_entries(username)
+            break
+        else:
+            print("Invalid username. Please try again.")
 
 
 def user_exists(username):
@@ -63,17 +70,35 @@ def user_exists(username):
 
 
 def register_user():
-    username = input("Create a username: ")
-    email = input("Enter your email: ")
-    age = input("Enter your age: ")
-    password = getpass.getpass("Create a password: ")
-    hashed_password = hash_password(password)
-
     credentials = read_credentials()
-    if username in credentials:
-        print("Username already exists. Please try a different username.")
+
+    while True:
+        username = input("Create a username: ")
+        if username.lower() == 'cancel' or username == '':
+            return False
+        if username in credentials:
+            print("Username already exists. Please try a different username.")
+            continue
+        break
+
+    while True:
+        email = input("Enter your email: ")
+        if email.lower() == 'cancel' or email == '':
+            return False
+        if any(user.get("email") == email for user in credentials.values()):
+            print("Email already exists. Please use a different email.")
+            continue
+        break
+
+    age = input("Enter your age: ")
+    if age.lower() == 'cancel' or age == '':
         return False
 
+    password = getpass.getpass("Create a password: ")
+    if password == '':
+        return False
+
+    hashed_password = hash_password(password)
     credentials[username] = {"email": email, "age": age, "password": hashed_password}
     write_credentials(credentials)
     print("Registration successful.")
@@ -100,7 +125,10 @@ def display_users():
 
 def view_user_info():
     display_users()
+    print("Enter 'cancel' to go back.")
     username = input("Enter username to view info: ")
+    if username.lower() == 'cancel':
+        return
     user_info = read_credentials().get(username)
     if user_info:
         print(f"Username: {username}\nEmail: {user_info['email']}\nAge: {user_info['age']}")
@@ -114,7 +142,10 @@ def delete_user(admin_username):
         return
 
     display_users()
+    print("Enter 'cancel' to go back.")
     delete_username = input("Enter the username of the user to delete: ")
+    if delete_username.lower() == 'cancel':
+        return
     credentials = read_credentials()
     if delete_username in credentials:
         del credentials[delete_username]
@@ -131,7 +162,10 @@ def delete_user_entry(username):
         return
 
     list_entries(username)
+    print("Enter 'cancel' to go back.")
     entry_date = input("Enter the date of the entry you want to delete (MM-DD-YYYY): ")
+    if entry_date.lower() == 'cancel':
+        return
     entry_file = f"{journal_dir}/{entry_date}.txt"
 
     if os.path.exists(entry_file):
@@ -171,43 +205,44 @@ def read_entry(username):
         print("Invalid date format. Please use MM/DD/YYYY.")
 
 
-def view_mood_statistics():
+def view_mood_statistics(username):
     print("\nMood Statistics:")
     mood_count = {}
-    for user_dir in os.listdir(JOURNAL_PATH):
-        user_path = os.path.join(JOURNAL_PATH, user_dir)
-        if os.path.isdir(user_path):
-            for filename in os.listdir(user_path):
-                file_path = os.path.join(user_path, filename)
-                with open(file_path, "r") as file:
-                    entries = file.read().split('\n\n')  # Split entries by double newline
-                    for entry in entries:
-                        lines = entry.split('\n')
-                        mood_line = next((line for line in lines if line.startswith("Mood:")), None)
-                        if mood_line:
-                            mood = mood_line.split("Mood: ")[1]
-                            mood_count[mood] = mood_count.get(mood, 0) + 1
-
+    user_path = os.path.join(JOURNAL_PATH, username)
+    if os.path.isdir(user_path):
+        for filename in os.listdir(user_path):
+            file_path = os.path.join(user_path, filename)
+            with open(file_path, "r") as file:
+                entries = file.read().split('\n\n')
+                for entry in entries:
+                    lines = entry.split('\n')
+                    mood_line = next((line for line in lines if line.startswith("Mood:")), None)
+                    if mood_line:
+                        mood = mood_line.split("Mood: ")[1]
+                        mood_count[mood] = mood_count.get(mood, 0) + 1
     for mood, count in mood_count.items():
         print(f"{mood}: {count} time(s)")
 
 
-def search_entries(keyword):
+def search_entries(username, keyword):
     found = False
+    user_path = os.path.join(JOURNAL_PATH, username)
     print("\nSearch Results:")
-    for filename in os.listdir(JOURNAL_PATH):
-        with open(f"{JOURNAL_PATH}/{filename}", "r") as file:
-            entries = file.read().split('\nTitle: ')[1:]
-            for entry in entries:
-                if keyword.lower() in entry.lower():
-                    title = entry.split('\n')[0]
-                    date = filename.replace('.txt', '').replace('-', '/')
-                    print(f"Entry: {title} (Date: {date})")
-                    found = True
-
+    if os.path.isdir(user_path):
+        for filename in os.listdir(user_path):
+            file_path = os.path.join(user_path, filename)
+            with open(file_path, "r") as file:
+                entries = file.read().split('\n\n')
+                for entry in entries:
+                    if keyword.lower() in entry.lower():
+                        title_line = next((line for line in entry.split('\n') if line.startswith("Title:")),
+                                          "Title: Unknown")
+                        title = title_line.split("Title: ")[1]
+                        date = filename.replace('.txt', '')
+                        print(f"Entry: {title} (Date: {date})")
+                        found = True
     if not found:
         print("No entries found with that keyword.")
-    pass
 
 
 def list_entries(username):
@@ -301,9 +336,10 @@ def main():
                     elif choice == '2':
                         read_entry(username)
                     elif choice == '3':
-                        view_mood_statistics()
+                        view_mood_statistics(username)
                     elif choice == '4':
-                        search_entries(username)
+                        keyword = input("Enter keyword to search: ")
+                        search_entries(username, keyword)
                     elif choice == '5':
                         list_entries(username)
                     elif choice == '6':
