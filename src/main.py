@@ -5,26 +5,35 @@ from user_module import write_entry, read_entry, delete_user_entry,\
     view_mood_statistics, search_entries, delete_own_account
 from shared_functions import login, register_user, list_entries
 
+def print_menu(options, title="Menu"):
+    print("\n" + "=" * 30)
+    print(f"{title}".center(30))
+    print("=" * 30)
+    for key, value in options.items():
+        print(f"{key}. {value}")
 
 def main():
-    create_admin_account()  # This ensures the admin account is created at startup
+    create_admin_account()  # Ensures the admin account is created at startup
 
     while True:
-        print("Welcome to Journal App, please sign in.")
-        user_type = input("Are you an admin (A), a new user (N), a returning user (R),"
-                          " or would you like to log out (Q)? [A/N/R/Q]: ").strip().lower()
+        print("\n" + "-" * 50)
+        print("Welcome to Journal App".center(50))
+        print("-" * 50)
+        user_type = input("Select your role:\n1. Admin (A)\n2. New User (N)\n3. Returning User (R)\n4. Log Out (Q)\nYour choice [A/N/R/Q]: ").strip().lower()
 
         if user_type == 'a':
             username = login()
             if username == 'admin':
-                print(f"Welcome, Admin {username}!")
+                print(f"\nWelcome, Admin {username}!")
                 while True:
-                    print("\nAdmin Actions")
-                    print("1. Create a User")
-                    print("2. View User Info")
-                    print("3. Delete a User")
-                    print("4. View User Journals")
-                    print("5. Log Out")
+                    admin_options = {
+                        "1": "Create a User",
+                        "2": "View User Info",
+                        "3": "Delete a User",
+                        "4": "View User Journals",
+                        "5": "Log Out"
+                    }
+                    print_menu(admin_options, "Admin Actions")
                     admin_choice = input("Enter choice: ")
 
                     if admin_choice == '1':
@@ -49,17 +58,19 @@ def main():
 
             username = login()
             if username:
-                print(f"Welcome, {username}!")
+                print(f"\nWelcome, {username}!")
                 while True:
-                    print("\nJournal App")
-                    print("1. Write new entry")
-                    print("2. Read an entry")
-                    print("3. View mood statistics")
-                    print("4. Search entries")
-                    print("5. List all entries")
-                    print("6. Delete an entry")
-                    print("7. Delete your account")
-                    print("8. Log Out")
+                    user_options = {
+                        "1": "Write new entry",
+                        "2": "Read an entry",
+                        "3": "View mood statistics",
+                        "4": "Search entries",
+                        "5": "List all entries",
+                        "6": "Delete an entry",
+                        "7": "Delete your account",
+                        "8": "Log Out"
+                    }
+                    print_menu(user_options, "Journal App")
                     choice = input("Enter choice: ")
 
                     if choice == '1':
@@ -77,7 +88,7 @@ def main():
                         delete_user_entry(username)
                     elif choice == '7':
                         if delete_own_account(username):
-                            break  # Exit the user menu if account deletion is successful
+                            break  # Exit if account deletion is successful
                     elif choice == '8':
                         break  # Logging out
                     else:
@@ -86,11 +97,11 @@ def main():
                 print("Login failed. Please try again.")
 
         elif user_type == 'q':
-            break  # Logging out of the program
+            print("\nLogging out of the program. Goodbye!")
+            break
 
         else:
             print("Invalid selection. Please enter 'A', 'N', 'R', or 'Q'.")
-
 
 if __name__ == "__main__":
     main()
