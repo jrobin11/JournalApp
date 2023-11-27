@@ -5,7 +5,7 @@ import hashlib
 import getpass
 
 CREDENTIALS_PATH = "credentials.json"
-JOURNAL_PATH = "journal_entries"
+JOURNAL_PATH = "../journal_entries"
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()

@@ -1,8 +1,8 @@
 import os
 import datetime
-from shared_functions import list_entries, read_credentials, write_credentials, display_users
+from src.shared_functions import list_entries, read_credentials, write_credentials
 
-JOURNAL_PATH = "journal_entries"
+JOURNAL_PATH = "../journal_entries"
 
 def write_entry(username):
     today = datetime.date.today()

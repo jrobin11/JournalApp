@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import getpass
 
-CREDENTIALS_PATH = "credentials.json"
+CREDENTIALS_PATH = "src/credentials.json"
 JOURNAL_PATH = "journal_entries"
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin'
