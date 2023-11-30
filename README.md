@@ -148,17 +148,29 @@ The arrows indicate the direction of interaction, showing how main.py communicat
       - Delete Your Account: Allows users to delete their own account from the system.
       - Log Out: Users can log out, ending their session and returning to the role selection prompt.
 ![Screenshot 1](https://github.com/jrobin11/JournalApp/assets/73866458/a301dc66-c84c-4553-a360-5c8c44e1255b.png)
+
 ---
+
 ![Screenshot 2](https://github.com/jrobin11/JournalApp/assets/73866458/21508d5b-84ba-4f59-b5d8-1be1297b4986.png)
+
 ---
+
 ![Screenshot 3](https://github.com/jrobin11/JournalApp/assets/73866458/7020e249-d169-4f44-8444-86dc6424dca5.png)
+
 ---
+
 ![Screenshot 4](https://github.com/jrobin11/JournalApp/assets/73866458/ba24f0ce-1d4b-4013-ba1e-d22db4cd6927.png)
+
 ---
+
 ![Screenshot 5](https://github.com/jrobin11/JournalApp/assets/73866458/af87271a-26b6-406a-b743-2b5998cdf9e8.png)
+
 ---
+
 ![Screenshot 6](https://github.com/jrobin11/JournalApp/assets/73866458/f9c15e5e-509d-4ab1-bc58-80904feaf28a.png)
+
 ---
+
 ![Screenshot 7](https://github.com/jrobin11/JournalApp/assets/73866458/4567e95d-1b0c-4fef-87a1-b56f6e546528.png)
 
 ---
