@@ -23,16 +23,19 @@ Following are the system requirements of the application:
 ### SETUP AND INSTALLATION
 
 #### Cloning the Repository
-``
-``` git clone git@github.com:jrobin11/JournalApp.git ```
-``` cd JournalApp ```
+To clone the repository to your local machine, use the following Git command:
+```bash
+git clone git@github.com:jrobin11/JournalApp.git
+cd JournalApp
+```
 Installing Dependencies
 Memory Lane does not require external dependencies. It utilizes standard Python libraries.
 
 Running the Application
 To run Memory Lane, navigate to the project directory and execute the main script:
-`` 
-```python main.py```
+```bash
+python main.py
+```
 
 ### BACKGROUND
 A brief review of existing literature reveals a growing need for digital tools that cater to the elderly. Studies indicate that engaging in reflective writing and memory sharing can significantly enhance mental health in older adults. This project aligns with CMPSC 472's objectives by applying theoretical knowledge in a practical, user-centered context.
