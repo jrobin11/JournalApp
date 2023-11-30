@@ -131,7 +131,22 @@ The arrows indicate the direction of interaction, showing how main.py communicat
 ---
 
 ### FUNCTIONALITIES AND TEST RESULTS
-
+  - Functionalites:
+      - Admin Options:
+        - Create a User: Allows the admin to create a new user account by entering a unique username, email, and password.
+        - View User Info: The admin can view the information of any user, such as their username, email, and age.
+        - Delete a User: This option allows the admin to delete a user's account from the system.
+        - View User Journals: The admin can view all journal entries made by a specific user.
+        - Log Out: This allows the admin to log out of their session, returning to the initial role selection prompt.
+    - User Options:
+      - Write New Entry: A user can create a new journal entry, providing a title, mood, and content for the day.
+      - Read an Entry: Users can read their journal entries from a specific date they input.
+      - View Mood Statistics: This option allows users to view a count of how many times they have recorded each mood in their journal.
+      - Search Entries: Users can search through their entries for specific keywords.
+      - List All Entries: This displays a list of all the titles of the user's journal entries along with their dates.
+      - Delete an Entry: Users can delete a specific journal entry by providing the date of the entry.
+      - Delete Your Account: Allows users to delete their own account from the system.
+      - Log Out: Users can log out, ending their session and returning to the role selection prompt.
 ![Screenshot 1](https://github.com/jrobin11/JournalApp/assets/73866458/a301dc66-c84c-4553-a360-5c8c44e1255b.png)
 
 ![Screenshot 2](https://github.com/jrobin11/JournalApp/assets/73866458/21508d5b-84ba-4f59-b5d8-1be1297b4986.png)
