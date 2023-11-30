@@ -1,27 +1,33 @@
 # shared_functions.py
+# This module provides common utility functions used across the Journal App.
+
 import json
 import os
 import hashlib
 import getpass
 
+# Set the path for the credentials and journal entries relative to the current file.
 current_dir = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_PATH = os.path.join(current_dir, "credentials.json")
 JOURNAL_PATH = os.path.join(current_dir, "../journal_entries")
 
-
+# Function to hash a password using SHA-256, providing basic security for stored passwords.
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+# Function to read the user credentials from the JSON file.
 def read_credentials():
     if not os.path.exists(CREDENTIALS_PATH):
         return {}
     with open(CREDENTIALS_PATH, 'r') as file:
         return json.load(file)
 
+# Function to write updated credentials back to the JSON file.
 def write_credentials(credentials):
     with open(CREDENTIALS_PATH, 'w') as file:
         json.dump(credentials, file, indent=4)
 
+# Function to handle user login by checking entered credentials against stored ones.
 def login():
     username = input("Enter your username: ")
     password = getpass.getpass("Enter your password: ")
@@ -32,6 +38,7 @@ def login():
         return username
     return None
 
+# Function to register a new user, ensuring unique username and email.
 def register_user():
     credentials = read_credentials()
 
@@ -67,12 +74,14 @@ def register_user():
     print("Registration successful.")
     return True
 
+# Function to display a list of all registered users.
 def display_users():
     print("List of Users:")
     credentials = read_credentials()
     for user in credentials:
         print(user)
 
+# Function to list all journal entries for a specific user.
 def list_entries(username):
     journal_dir = f"{JOURNAL_PATH}/{username}"
     entries_dict = {}
