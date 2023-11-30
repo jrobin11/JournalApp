@@ -131,7 +131,7 @@ The arrows indicate the direction of interaction, showing how main.py communicat
 ---
 
 ### FUNCTIONALITIES AND TEST RESULTS
-  - Functionalites:
+  - Functionalities:
       - Admin Options:
         - Create a User: Allows the admin to create a new user account by entering a unique username, email, and password.
         - View User Info: The admin can view the information of any user, such as their username, email, and age.
@@ -147,6 +147,9 @@ The arrows indicate the direction of interaction, showing how main.py communicat
       - Delete an Entry: Users can delete a specific journal entry by providing the date of the entry.
       - Delete Your Account: Allows users to delete their own account from the system.
       - Log Out: Users can log out, ending their session and returning to the role selection prompt.
+
+#### The Following Screenshots are of the main.py file running the program and showing you each functionality of the Journal App.
+
 ![Screenshot 1](https://github.com/jrobin11/JournalApp/assets/73866458/a301dc66-c84c-4553-a360-5c8c44e1255b.png)
 
 ---
