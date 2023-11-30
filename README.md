@@ -1,13 +1,15 @@
-## Project Report
+
+Project Report
 
 By: Jahidul Robin Mitkumar Patel
 
 **Memory Lane - Journal Application**
 # **ABSTRACT**
-# Memory Lane is a command-line diary application designed to enhance the mental well-being of elderly users. This project demonstrates the application of computing concepts in creating user-friendly software that facilitates reflective writing and memory preservation. The software is developed in Python and uses a simple file system for data storage, ensuring ease of use and accessibility. Key functionalities include user registration, journal entry creation, and entry management. This project aligns with CMPSC 472's focus on practical software development and user-centric design.
-#
+` Memory Lane is a command-line diary application designed to enhance the mental well-being of elderly users. This project demonstrates the application of computing concepts in creating user-friendly software that facilitates reflective writing and memory preservation. The software is developed in Python and uses a simple file system for data storage, ensuring ease of use and accessibility. Key functionalities include user registration, journal entry creation, and entry management. This project aligns with CMPSC 472's focus on practical software development and user-centric design.
+`
+
 # **INTRODUCTION**
-# Memory Lane is a user-friendly, command-line diary application tailored for elderly users to easily record and revisit their daily thoughts and memories. It is designed to run smoothly on basic computer systems, enabling users to write new entries, read old ones, and search through entries by dates or keywords. The app stores each entry in a simple text file format, ensuring accessibility and simplicity. By providing a digital space for reflective writing, Memory Lane aims to offer therapeutic benefits and a sense of nostalgia, enhancing the mental well-being of its users. This project also serves as a practical application of file system and mass-storage system concepts, demonstrating the real-world utility of these computing fundamentals.
+`Memory Lane is a user-friendly, command-line diary application tailored for elderly users to easily record and revisit their daily thoughts and memories. It is designed to run smoothly on basic computer systems, enabling users to write new entries, read old ones, and search through entries by dates or keywords. The app stores each entry in a simple text file format, ensuring accessibility and simplicity. By providing a digital space for reflective writing, Memory Lane aims to offer therapeutic benefits and a sense of nostalgia, enhancing the mental well-being of its users. This project also serves as a practical application of file system and mass-storage system concepts, demonstrating the real-world utility of these computing fundamentals.` 
 
 # **OBJECTIVES**
 The primary goals of Memory Lane include:
@@ -19,11 +21,8 @@ The primary goals of Memory Lane include:
 # **SYSTEM REQUIREMENTS:**
 Following are the system requirements of the application:
 
-0. Unix/Linux operating system (tested and programmed on Ubuntu 20)
+1. Unix/Linux operating system (tested and programmed on Ubuntu 20)
 0. Python 3
-
-
-
 
 
 # **SETUP AND INSTALLATION**
@@ -41,12 +40,12 @@ Following are the system requirements of the application:
 **Running the Application**
 
 - To run Memory Lane, navigate to the project directory and execute the main script:
-
 python main.py
+
 #
 # **BACKGROUND**
-# A brief review of existing literature reveals a growing need for digital tools that cater to the elderly. Studies indicate that engaging in reflective writing and memory sharing can significantly enhance mental health in older adults. This project aligns with CMPSC 472's objectives by applying theoretical knowledge in a practical, user-centered context.
-#
+`A brief review of existing literature reveals a growing need for digital tools that cater to the elderly. Studies indicate that engaging in reflective writing and memory sharing can significantly enhance mental health in older adults. This project aligns with CMPSC 472's objectives by applying theoretical knowledge in a practical, user-centered context.
+`
 # **USAGE**
 - Upon running the application, users will be prompted to either log in as an admin, create a new user account, or log in as a returning user. The application provides various functionalities based on the user role:
   - **Admins Users:**
