@@ -1,14 +1,18 @@
 # main.py
+# Import necessary functions from other modules
 from src.admin_module import create_admin_account, admin_create_user,\
     admin_view_user_journal, delete_user, admin_view_user_info
 from user_module import write_entry, read_entry, delete_user_entry,\
     view_mood_statistics, search_entries, delete_own_account
 from shared_functions import login, register_user, list_entries
 
+# Function to print a menu with given options and a title
 def print_menu(options, title="Menu"):
+    # Print the menu header
     print("\n" + "=" * 30)
     print(f"{title}".center(30))
     print("=" * 30)
+    # Print each menu option
     for key, value in options.items():
         print(f"{key}. {value}")
 
@@ -21,6 +25,7 @@ def main():
         print("-" * 50)
         user_type = input("Select your role:\n1. Admin (A)\n2. New User (N)\n3. Returning User (R)\n4. Log Out (Q)\nYour choice [A/N/R/Q]: ").strip().lower()
 
+        # Admin role functionalities
         if user_type == 'a':
             username = login()
             if username == 'admin':
@@ -36,6 +41,7 @@ def main():
                     print_menu(admin_options, "Admin Actions")
                     admin_choice = input("Enter choice: ")
 
+                    # Execute the selected admin option
                     if admin_choice == '1':
                         admin_create_user()
                     elif admin_choice == '2':
@@ -51,6 +57,7 @@ def main():
             else:
                 print("Admin login failed.")
 
+        # New or Returning User functionalities
         elif user_type in ['n', 'r']:
             if user_type == 'n':
                 register_user()
@@ -96,6 +103,7 @@ def main():
             else:
                 print("Login failed. Please try again.")
 
+        # Exit the application
         elif user_type == 'q':
             print("\nLogging out of the program. Goodbye!")
             break
@@ -103,5 +111,6 @@ def main():
         else:
             print("Invalid selection. Please enter 'A', 'N', 'R', or 'Q'.")
 
+# Check if the script is the main program and run it
 if __name__ == "__main__":
     main()
