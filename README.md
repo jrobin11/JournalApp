@@ -1,7 +1,7 @@
 # Project Report
 
 ## Memory Lane - Journal Application
-Author: Jahidul Robin Mitkumar Patel
+Author: Jahidul Robin & Mitkumar Patel
 
 ---
 

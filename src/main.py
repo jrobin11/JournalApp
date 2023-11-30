@@ -1,10 +1,11 @@
 # main.py
 # Import necessary functions from other modules
-from src.admin_module import create_admin_account, admin_create_user,\
+from admin_module import create_admin_account, admin_create_user,\
     admin_view_user_journal, delete_user, admin_view_user_info
 from user_module import write_entry, read_entry, delete_user_entry,\
     view_mood_statistics, search_entries, delete_own_account
-from shared_functions import login, register_user, list_entries
+from shared_functions import list_entries, read_credentials, write_credentials, login, register_user
+
 
 # Function to print a menu with given options and a title
 def print_menu(options, title="Menu"):

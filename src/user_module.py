@@ -1,8 +1,9 @@
 import os
 import datetime
-from src.shared_functions import list_entries, read_credentials, write_credentials
+from shared_functions import list_entries, read_credentials, write_credentials
 
-JOURNAL_PATH = "../journal_entries"
+# Assuming the journal_entries directory is at the same level as the src directory
+JOURNAL_PATH = os.path.join(os.path.dirname(__file__), '..', 'journal_entries')
 
 def write_entry(username):
     today = datetime.date.today()

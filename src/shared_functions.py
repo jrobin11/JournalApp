@@ -6,7 +6,8 @@ import getpass
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_PATH = os.path.join(current_dir, "credentials.json")
-JOURNAL_PATH = "../journal_entries"
+JOURNAL_PATH = os.path.join(current_dir, "../journal_entries")
+
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
